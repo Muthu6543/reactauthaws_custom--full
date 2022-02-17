@@ -1,11 +1,85 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useAuthenticator, Button } from "@aws-amplify/ui-react";
+import { Auth } from "aws-amplify";
 
 const Home = (props) => {
   //   useEffect(() => {      });
   const { user, signOut } = useAuthenticator((context) => [context.user]);
+  //console.log( user);
   const usergroup = user.signInUserSession.idToken.payload["cognito:groups"];
-  console.log(user, usergroup[0]);
+  console.log("user-group:", usergroup[0]);
+
+  const [email, setEmail] = useState(user.attributes.email);
+  const [gender, setGender] = useState(user.attributes.gender);
+  const [name, setName] = useState(user.attributes.given_name);
+  const [surname, setSurname] = useState(user.attributes.family_name);
+  const [oldPassword, setOldPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  const handleInputChange = (e, keyName) => {
+    let newValue = e.target.value;
+    if (keyName === "email") setEmail(newValue);
+    if (keyName === "gender") setGender(newValue);
+    if (keyName === "name") setName(newValue);
+    if (keyName === "surname") setSurname(newValue);
+    if (keyName === "oldPassword") setOldPassword(newValue);
+    if (keyName === "newPassword") setNewPassword(newValue);
+    if (keyName === "confirmPassword") setConfirmPassword(newValue);
+  };
+
+  /** SINGLE ATTRIBUTES */
+  const updateEmail = async () => {
+    try {
+      let data = await Auth.updateUserAttributes(user, { email: email });
+      console.log(data); // SUCCESS
+    } catch (err) {
+      console.log("error", err);
+    }
+  };
+
+  const updateGender = async () => {
+    try {
+      let data = await Auth.updateUserAttributes(user, { gender: gender });
+      console.log(data);
+    } catch (err) {
+      console.log("error", err);
+    }
+  };
+
+  /** MULTIPLE ATTRIBUTES */
+  const updateUserAttr = async () => {
+    try {
+      let data = await Auth.updateUserAttributes(user, {
+        given_name: name,
+        family_name: surname,
+      });
+      console.log(data); // SUCCESS
+      //history.push("/confirm-register");
+    } catch (err) {
+      console.log("error", err);
+    }
+  };
+
+  /** PASSWORD */
+  const updateUserPassword = async (e) => {
+    e.preventDefault();
+    console.log("oldPassword:", oldPassword);
+    console.log("newPass:", newPassword, "confirmPass:", confirmPassword);
+
+    if (newPassword === confirmPassword && newPassword !== "") {
+      console.log("passwords matched!");
+
+      try {
+        let data = await Auth.changePassword(user, oldPassword, newPassword);
+        console.log(data); // SUCCESS
+      } catch (err) {
+        console.log("error", err);
+      }
+    } else {
+      console.log("passwords didn't match!");
+    }
+  };
 
   return (
     <>
@@ -23,6 +97,7 @@ const Home = (props) => {
         <br />
         <b>Email: </b>
         {user.attributes.email}
+        <br />
         <b>Gender: </b>
         {user.attributes.gender}
         <br />
@@ -33,15 +108,119 @@ const Home = (props) => {
         <hr></hr>
         <br></br>
       </div>
+
       <div style={{ backgroundColor: "lightcyan" }}>
-        CHANGE PASSWORD <hr />
+        CHANGE SINGLE ATTRIBUTE <hr />
         <b>Email: </b>
-        {user.attributes.email}
-        <b>Gender: </b>
-        {user.attributes.gender}
-        <br />
-        <button onClick={signOut}>LOGOUT</button>
-        <hr></hr>
+        <table>
+          <tr>
+            <td>
+              <input
+                value={email}
+                onChange={(e) => handleInputChange(e, "email")}
+              />
+            </td>
+            <td>
+              <button onClick={updateEmail}>SAVE</button>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <input
+                value={gender}
+                onChange={(e) => handleInputChange(e, "gender")}
+              />
+            </td>
+            <td>
+              <button onClick={updateGender}>SAVE</button>
+            </td>
+          </tr>
+        </table>
+        <br></br>
+      </div>
+
+      <div style={{ backgroundColor: "lightblue" }}>
+        CHANGE MULTIPLE ATTRIBUTES <hr />
+        <table>
+          <tr>
+            <b>Name [given_name]: </b>
+            <td>
+              <input
+                value={name}
+                onChange={(e) => handleInputChange(e, "name")}
+              />
+            </td>
+            <td>
+              <b>Surname [family_name]: </b>
+              <input
+                value={surname}
+                onChange={(e) => handleInputChange(e, "surname")}
+              />
+            </td>
+            <td>
+              <button onClick={updateUserAttr}>SAVE CHANGES</button>
+            </td>
+          </tr>
+        </table>
+        <br></br>
+      </div>
+
+      <div style={{ backgroundColor: "lightgoldenrodyellow" }}>
+        CHANGE PASSWORD <hr />
+        <table>
+          <tr>
+            <td>
+              <b>Current Password: </b>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <input
+                value={oldPassword}
+                onChange={(e) => handleInputChange(e, "oldPassword")}
+                //type="password"
+                placeholder="enter your current password"
+              />
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <b>New Password: </b>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <input
+                value={newPassword}
+                onChange={(e) => handleInputChange(e, "newPassword")}
+                //type="password"
+                placeholder="enter a new password"
+              />
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <b>Confirm New Password: </b>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <input
+                value={confirmPassword}
+                onChange={(e) => handleInputChange(e, "confirmPassword")}
+                //type="password"
+                placeholder="enter the new password again"
+              />
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <button onClick={(e) => updateUserPassword(e)}>
+                UPDATE PASSWORD
+              </button>
+            </td>
+          </tr>
+        </table>
         <br></br>
       </div>
     </>

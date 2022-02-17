@@ -2,12 +2,12 @@
 import "./App.css";
 import { Authenticator, useAuthenticator } from "@aws-amplify/ui-react";
 import Home from "./Home";
-import Login from "./Auth/Login";
+import AuthenticatorLR from "./Auth/AuthenticatorLR";
 
 function App() {
   const { route } = useAuthenticator((context) => [context.route]);
   console.log(route);
-  return route === "authenticated" ? <Home /> : <Login />;
+  return route === "authenticated" ? <Home /> : <AuthenticatorLR />;
 }
 
 export default function AppWithProvider() {
