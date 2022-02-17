@@ -1,5 +1,5 @@
 import { Authenticator, useAuthenticator } from "@aws-amplify/ui-react";
-import { CheckboxField, TextField } from "@aws-amplify/ui-react";
+import { CheckboxField, TextField, SelectField } from "@aws-amplify/ui-react";
 
 // https://ui.docs.amplify.aws/components/authenticator?platform=react#headers--footers
 
@@ -10,14 +10,31 @@ export function FormFields() {
     <>
       {/* Re-use default `Authenticator.SignUp.FormFields` */}
       <Authenticator.SignUp.FormFields />
-      {/* Enter app-specific standard attributes here 
-            e.g. address, gender, birthdate` */}
+      {/* Enter APP-SPECIFIC STANDARD ATTRIBUTES here e.g. address, gender, birthdate` */}
       <TextField
         isRequired
         //key="name"
         name="gender"
         label="Gender"
         placeholder="Gender"
+        type="text"
+      />
+      {/* Enter CUSTOM ATTRIBUTES here` */}
+      <SelectField
+        isRequired
+        label="Category"
+        name="custom:category"
+        descriptiveText="What's your designation?"
+      >
+        <option value="student">Student</option>
+        <option value="lecturer">Lecturer</option>
+        <option value="driver">Driver</option>
+      </SelectField>
+      <TextField
+        isRequired={false}
+        name="custom:schoolid"
+        label="School ID"
+        placeholder="ID"
         type="text"
       />
       {/* Append & require Terms & Conditions field to sign up  */}

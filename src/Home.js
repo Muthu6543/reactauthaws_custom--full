@@ -3,16 +3,21 @@ import { useAuthenticator, Button } from "@aws-amplify/ui-react";
 import { Auth } from "aws-amplify";
 
 const Home = (props) => {
-  //   useEffect(() => {      });
+  //   user payload
   const { user, signOut } = useAuthenticator((context) => [context.user]);
-  //console.log( user);
+  //console.log(user);
+  // user groups
   const usergroup = user.signInUserSession.idToken.payload["cognito:groups"];
   console.log("user-group:", usergroup[0]);
+  // custom attribues
+  const category = user.signInUserSession.idToken.payload["custom:category"];
+  const schoolid = user.signInUserSession.idToken.payload["custom:schoolid"];
 
   const [email, setEmail] = useState(user.attributes.email);
   const [gender, setGender] = useState(user.attributes.gender);
   const [name, setName] = useState(user.attributes.given_name);
   const [surname, setSurname] = useState(user.attributes.family_name);
+  const [schoolID, setSchoolID] = useState(schoolid);
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -23,6 +28,7 @@ const Home = (props) => {
     if (keyName === "gender") setGender(newValue);
     if (keyName === "name") setName(newValue);
     if (keyName === "surname") setSurname(newValue);
+    if (keyName === "schoolid") setSchoolID(newValue);
     if (keyName === "oldPassword") setOldPassword(newValue);
     if (keyName === "newPassword") setNewPassword(newValue);
     if (keyName === "confirmPassword") setConfirmPassword(newValue);
@@ -33,6 +39,7 @@ const Home = (props) => {
     try {
       let data = await Auth.updateUserAttributes(user, { email: email });
       console.log(data); // SUCCESS
+      //history.push("/confirm-register");
     } catch (err) {
       console.log("error", err);
     }
@@ -53,13 +60,27 @@ const Home = (props) => {
       let data = await Auth.updateUserAttributes(user, {
         given_name: name,
         family_name: surname,
+        "custom:schoolid": schoolID,
+      });
+      console.log(data); // SUCCESS
+    } catch (err) {
+      console.log("error", err);
+    }
+  };
+
+  /*const updateUserAttr = async () => {
+    try {
+      let data = await Auth.updateUserAttributes(user, {
+        given_name: name,
+        family_name: surname,
+        schoolid: schoolid,
       });
       console.log(data); // SUCCESS
       //history.push("/confirm-register");
     } catch (err) {
       console.log("error", err);
     }
-  };
+  };*/
 
   /** PASSWORD */
   const updateUserPassword = async (e) => {
@@ -85,7 +106,7 @@ const Home = (props) => {
     <>
       <div style={{ backgroundColor: "lightcoral" }}>
         HOME PAGE <hr />
-        <h1>Hello 2, {user.username}</h1>
+        <h1>Hello, {user.username}</h1>
         <b>AWS ID: </b>
         {user.attributes.sub}
         <br />
@@ -101,6 +122,12 @@ const Home = (props) => {
         <b>Gender: </b>
         {user.attributes.gender}
         <br />
+        <b>Category: </b>
+        {category}
+        <br />
+        <b>School ID: </b>
+        {schoolid}
+        <br />
         <button onClick={signOut}>LOGOUT</button>
         <Button onClick={signOut} style={{ backgroundColor: "grey" }}>
           SIGN OUT
@@ -111,9 +138,11 @@ const Home = (props) => {
 
       <div style={{ backgroundColor: "lightcyan" }}>
         CHANGE SINGLE ATTRIBUTE <hr />
-        <b>Email: </b>
         <table>
           <tr>
+            <td>
+              <b>Email: </b>
+            </td>
             <td>
               <input
                 value={email}
@@ -125,6 +154,9 @@ const Home = (props) => {
             </td>
           </tr>
           <tr>
+            <td>
+              <b>Gender: </b>
+            </td>
             <td>
               <input
                 value={gender}
@@ -157,6 +189,15 @@ const Home = (props) => {
                 onChange={(e) => handleInputChange(e, "surname")}
               />
             </td>
+            <tr>
+              <b>Sch.ID: </b>
+              <td>
+                <input
+                  value={schoolID}
+                  onChange={(e) => handleInputChange(e, "schoolid")}
+                />
+              </td>
+            </tr>
             <td>
               <button onClick={updateUserAttr}>SAVE CHANGES</button>
             </td>

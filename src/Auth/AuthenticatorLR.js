@@ -13,7 +13,7 @@ const AuthenticatorLR = (props) => {
     <Authenticator
       variation="default" // default or modal
       loginMechanisms={["email"]}
-      signUpAttributes={["given_name", "family_name", "address"]}
+      signUpAttributes={["given_name", "family_name"]} // or empty
       socialProviders={["google"]}
       //hideSignUp={true}
       initialState="signUp"
