@@ -62,7 +62,7 @@ const Home = (props) => {
         family_name: surname,
         "custom:schoolid": schoolID,
       });
-      console.log(data); // SUCCESS
+      console.log(data);
     } catch (err) {
       console.log("error", err);
     }

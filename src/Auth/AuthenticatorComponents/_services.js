@@ -14,6 +14,15 @@ export const services = {
   },
 
   async validateCustomSignUp(formData) {
+    //console.log(formData["custom:category"]);
+    //alert(formData["custom:category"]);
+    var category = formData["custom:category"];
+    console.log(category);
+    if (!formData["custom:category"]) {
+      return {
+        ["custom:category"]: "Category is a required field.",
+      };
+    }
     if (!formData.acknowledgement) {
       return {
         acknowledgement: "You must agree to the T&Cs",
@@ -21,3 +30,13 @@ export const services = {
     }
   },
 };
+
+/*
+async validateCustomSignUp(formData) {
+  if (!formData.category) {
+    return {
+      acknowledgement: "The category is a required field.",
+    };
+  }
+},
+*/

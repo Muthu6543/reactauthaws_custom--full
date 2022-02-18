@@ -13,8 +13,7 @@
         "signupAttributes": [
           "EMAIL",
           "GENDER",
-          "GIVEN_NAME",
-          "FAMILY_NAME"
+          "GIVEN_NAME"
         ],
         "passwordProtectionSettings": {
           "passwordPolicyMinLength": 8,
