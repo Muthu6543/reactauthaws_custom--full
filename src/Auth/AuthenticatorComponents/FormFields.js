@@ -14,13 +14,9 @@ export function FormFields() {
       {/* optional standard attribute  */}
       <TextField name="nickname" label="Nickname" placeholder="J" type="text" />
       {/* required standard attribute based on backend config */}
-      <SelectField
-        name="gender"
-        label="Gender"
-        descriptiveText="What's your gender?"
-      >
-        <option value="student">Male</option>
-        <option value="lecturer">Female</option>
+      <SelectField name="gender" label="Gender" placeholder="Select gender">
+        <option value="Male">Male</option>
+        <option value="Female">Female</option>
       </SelectField>
 
       {/* Enter CUSTOM ATTRIBUTES here` */}
@@ -36,7 +32,7 @@ export function FormFields() {
         placeholder="Please select a role"
       >
         <option value="student">Student</option>
-        <option value="lecturer">Lecturer</option>
+        <option value="teacher">Teacher</option>
         <option value="driver">Driver</option>
       </SelectField>
       <TextField

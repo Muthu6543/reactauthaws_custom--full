@@ -14,6 +14,12 @@
     "categories": {
       "auth": {
         "demoreactauthawscustom": {}
+      },
+      "function": {
+        "addUserToGroup": {
+          "deploymentBucketName": "amplify-demoreactauthawscust-staging-214522-deployment",
+          "s3Key": "amplify-builds/addUserToGroup-545444534b536e43476d-build.zip"
+        }
       }
     }
   }
