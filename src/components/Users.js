@@ -8,13 +8,11 @@ const Users = (props) => {
   const { user, signOut } = useAuthenticator((context) => [context.user]); //console.log(user);
 
   // user groups
-  const usergroup = user.signInUserSession.idToken.payload["cognito:groups"];
-  console.log("user-group:", usergroup[0]);
+  const group = user.signInUserSession.idToken.payload["cognito:groups"][0];
+  console.log("user-group:", group);
 
-  if (usergroup[0] === "STUDENTS")
-    return <Students user={user} signOut={signOut} />;
-  if (usergroup[0] === "TEACHERS")
-    return <Teachers user={user} signOut={signOut} />;
+  if (group === "STUDENTS") return <Students user={user} signOut={signOut} />;
+  if (group === "TEACHERS") return <Teachers user={user} signOut={signOut} />;
 };
 
 export default Users;
