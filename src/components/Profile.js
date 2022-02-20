@@ -3,12 +3,14 @@ import { Auth } from "aws-amplify";
 import { useAuthenticator, Button } from "@aws-amplify/ui-react";
 
 const Profile = (props) => {
-  //  const { user, signOut } = useAuthenticator((context) => [context.user]);
-  const { user, signOut } = props;
+  //const { user, signOut } = props;
+  const { signOut } = useAuthenticator((context) => [context.user]);
+  const usr = useAuthenticator((context) => [context.user]).user;
+  const [user, setUser] = useState(usr);
+
   // custom attribues
   const category = user.signInUserSession.idToken.payload["custom:category"];
   const schoolid = user.signInUserSession.idToken.payload["custom:schoolid"];
-
   const [email, setEmail] = useState(user.attributes.email);
   const [gender, setGender] = useState(user.attributes.gender);
   const [name, setName] = useState(user.attributes.given_name);
@@ -35,6 +37,7 @@ const Profile = (props) => {
     try {
       let data = await Auth.updateUserAttributes(user, { email: email });
       console.log(data); // SUCCESS
+      cognitoRefresh();
       //history.push("/confirm-register");
     } catch (err) {
       console.log("error", err);
@@ -45,6 +48,7 @@ const Profile = (props) => {
     try {
       let data = await Auth.updateUserAttributes(user, { gender: gender });
       console.log(data);
+      cognitoRefresh();
     } catch (err) {
       console.log("error", err);
     }
@@ -53,16 +57,26 @@ const Profile = (props) => {
   /** MULTIPLE ATTRIBUTES */
   const updateUserAttr = async () => {
     try {
+      // Auth.currentAuthenticatedUser({ bypassCache: true });
       let data = await Auth.updateUserAttributes(user, {
         given_name: name,
         family_name: surname,
         "custom:schoolid": schoolID,
       });
       console.log(data); // SUCCESS
-      //history.push("/confirm-register");
+      cognitoRefresh();
     } catch (err) {
       console.log("error", err);
     }
+  };
+
+  /** GET UPDATED ATTRIBUTES FROM COGNITO (COMPONENT DOM) */
+  const cognitoRefresh = () => {
+    Auth.currentAuthenticatedUser({
+      bypassCache: true, // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
+    })
+      .then((user) => setUser(user)) // console.log(user))
+      .catch((err) => console.log(err));
   };
 
   /** PASSWORD */
