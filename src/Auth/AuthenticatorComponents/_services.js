@@ -17,7 +17,7 @@ export const services = {
     //console.log(formData["custom:category"]);
     //alert(formData["custom:category"]);
     var category = formData["custom:category"];
-    console.log(category);
+    console.log("CATEGORY >> ", category);
     if (!formData["custom:category"]) {
       return {
         ["custom:category"]: "Category is a required field.",

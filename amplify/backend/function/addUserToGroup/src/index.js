@@ -4,19 +4,23 @@
 var AWS = require("aws-sdk");
 
 exports.handler = (event, context, callback) => {
-  var cognitoIdentityServiceProvider = new AWS.CognitoIdentityServiceProvider({
-    apiVersion: "2016-04-18",
-  });
+  var cognitoIdentityServiceProvider = new AWS.CognitoIdentityServiceProvider(); // {apiVersion: "2016-04-18"}
+
+  var category = event.request.userAttributes["custom:category"];
+  var group = null;
+  if (category === "student") group = "STUDENTS";
+  if (category === "teacher") group = "TEACHERS";
+  if (category === "driver") group = "DRIVERS";
 
   var params = {
-    GroupName: "TEACHERS", //your confirmed user gets added to this group
+    GroupName: group, //your confirmed user gets added to this group
     UserPoolId: event.userPoolId,
     Username: event.userName,
   };
 
-  // the user attribute 'custom:ManagerID' was set on User Sign Up.  Here, we are// using it as a flag.  If it has a value, then add the user to the Managers group.
-  console.log(event.request.userAttributes["custom:category"]);
-  if (event.request.userAttributes["custom:category"]) {
+  // the user attribute 'custom:category' was set on User Sign Up. Here, we are using it as a flag.
+  // If it has a value, then add the user to the Managers group.
+  if (category) {
     cognitoIdentityServiceProvider.adminAddUserToGroup(
       params,
       function (err, data) {

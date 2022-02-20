@@ -18,7 +18,7 @@
       "function": {
         "addUserToGroup": {
           "deploymentBucketName": "amplify-demoreactauthawscust-staging-214522-deployment",
-          "s3Key": "amplify-builds/addUserToGroup-545444534b536e43476d-build.zip"
+          "s3Key": "amplify-builds/addUserToGroup-517670777239372b532f-build.zip"
         }
       }
     }
